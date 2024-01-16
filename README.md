@@ -18,7 +18,7 @@ Use of this program requires at least one wearable device running the free [Sens
 python manage.py runserver 8000
 ```
 In wearable device, set up the hot spot. Connect the Caregiver device to the wearable's hot spot. 
-Within Sensor Logger app settings on the wearable device, enter Data Streaming, Enable HTTP Push on, Push URL changed to Caregiver device IP address in the following format: 'http://123.123.12.123:8000/data. The 8000 signifies the port being used by server.py. This can be changed as needed, but must be changed in both places. 
+Within Sensor Logger app settings on the wearable device, enter Data Streaming, Enable HTTP Push on, Push URL changed to Caregiver device IP address in the following format: 'http://123.123.12.123:8000/data'. The 8000 signifies the port being used by server.py. This can be changed as needed, but must be changed in both places. 
 On the caregiver's device, run server.py from this app to start. The app will display 'Detecting...' to show it is running. 
 
 ## Known issues
