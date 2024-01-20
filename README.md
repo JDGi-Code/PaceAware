@@ -6,20 +6,38 @@
   - **Status**:  Not maintained. 
   - **Platform Proposal Documents and App Handbook**: [Google Docs](https://drive.google.com/drive/folders/1-ZxsGWuHLTMUG1QJrg47m7wvjKXR95TX?usp=drive_link).
     
-## Dependencies
+## Requirements
 
 Use of this program requires at least one wearable device running the free [Sensor Logger](https://play.google.com/store/apps/details?id=com.kelvin.sensorapp&hl=en_US&gl=US) app. The caregiver should run this program on their own secondary device.
+Outside libraries used will include:
 
-## Installation
+* colorama: [simple color](https://pypi.org/project/colorama/) for text output (green for not_pacing, yellow for pacing)
+* playsound: this [library](https://github.com/TaylorSMarks/playsound) plays a mp3 or wav file.
+* alert file download: the [selected file](https://mixkit.co/free-sound-effects/alerts/) has a pleasant sound (unlike a doorbell or an anxiety-inducing alarm) to minimize unintended stress for all parties.
+* datetime, json, pandas, flask, and logging libraries
+
+## Files Description
+accelmagno_maker.py: Takes a base_filename as a paramter, reads in Accelerometer & Magnetometer csv files, & creates a new df with columns from both sensors, using .round(6) to convert to float32 format.
+
+squisher.py: Combines AccelMagno csv into distinct categories - not_pacing and pacing - which are used as training data.
+
+pacing_detection.py: 
+
+* calc_magnitude(data) & remove_noise(data, sampling_rate)
+* extract_features(data, window_sec, sample_rate, activity): reformats time column, resamples & calls add_features on 10 sec windows
+* train_tree(frames): performs accuracy test & writes the model to a pickle dump.
+* classify_live_window(df): calls all previous functions and reads the pickle.
+* test_live_classifier: Read by the server file.
+
+server.py: Reads accelerometer & magnetometer signals from the device.
+
+* classify_live_window: Returns user state, with help from colorama and playsound libraries
 
 ## Configuration and Usage
 
-```
-python manage.py runserver 8000
-```
-In wearable device, set up the hot spot. Connect the Caregiver device to the wearable's hot spot. 
-Within Sensor Logger app settings on the wearable device, enter Data Streaming, Enable HTTP Push on, Push URL changed to Caregiver device IP address in the following format: 'http://123.123.12.123:8000/data'. The 8000 signifies the port being used by server.py. This can be changed as needed, but must be changed in both places. 
-On the caregiver's device, run server.py from this app to start. The app will display 'Detecting...' to show it is running. 
+1. In wearable device, set up the hot spot. Connect the Caregiver device to the wearable's hot spot. 
+2. Within Sensor Logger app settings on the wearable device, enter Data Streaming, Enable HTTP Push on, Push URL changed to Caregiver device IP address in the following format: 'http://123.123.12.123:8000/data'. The 8000 signifies the port being used by server.py. This can be changed as needed, but must be changed in both places. 
+3. On the caregiver's device, run server.py from this app to start. The app will display 'Detecting...' to show it is running.
 
 ## Known issues
 
